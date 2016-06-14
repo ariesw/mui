@@ -78,10 +78,14 @@ function eventHandler(ev) {
   });
 
   buttonEl.appendChild(rippleEl);
-  
+
+  window.setTimeout(function() {
+    jqLite.addClass(rippleEl, 'mui-ripple-effect-x');
+  }, 0);
+
   window.setTimeout(function() {
     var parentNode = rippleEl.parentNode;
-    if (parentNode) parentNode.removeChild(rippleEl);
+    //if (parentNode) parentNode.removeChild(rippleEl);
   }, 2000);
 }
 
