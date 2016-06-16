@@ -79,14 +79,35 @@ function eventHandler(ev) {
 
   buttonEl.appendChild(rippleEl);
 
-  window.setTimeout(function() {
-    jqLite.addClass(rippleEl, 'mui-ripple-effect-x');
-  }, 0);
+  requestAnimationFrame(function() {
+    jqLite.css(rippleEl, {
+      width: '4000px',
+      height: '4000px',
+      opacity: 0,
+      transform: 'translate(-2000px, -2000px)'      
+    });
 
+    jqLite.addClass(rippleEl, 'mui--is-animating');
+
+    window.setTimeout(function() {
+      var parentNode = rippleEl.parentNode;
+      if (parentNode) parentNode.removeChild(rippleEl);
+    }, 600);
+  });
+
+  /*
+  requestAnimationFrame(function() {
+    jqLite.css(rippleEl, {
+      transitionProperty: 'transform, opacity, width, height',
+      transitionDuration: '.6s'
+    });
+  });*/
+
+  /*
   window.setTimeout(function() {
     var parentNode = rippleEl.parentNode;
-    //if (parentNode) parentNode.removeChild(rippleEl);
-  }, 2000);
+    if (parentNode) parentNode.removeChild(rippleEl);
+  }, 600);*/
 }
 
 
