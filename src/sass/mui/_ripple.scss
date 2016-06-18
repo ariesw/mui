@@ -9,48 +9,24 @@
   position: absolute;
   border-radius: 50%;
   pointer-events: none;
-  //opacity: 0;
-  //animation: mui-ripple-animation 0.6s;
 
+  visibility: hidden;
   opacity: 0.4;
+  transform: scale(1);
 
   &.mui--is-animating {
-    transition: transform0.3s cubic-bezier(0, 0, 0.2, 1),
-                width 0.3s cubic-bezier(0, 0, 0.2, 1),
-                height 0.3s cubic-bezier(0, 0, 0.2, 1),
-                opacity 0.6s cubic-bezier(0, 0, 0.2, 1);
-  }
-}
-
-
-.mui-ripple-effect-x {
-  opacity: 0;
-  transform: translate(-2000px, -2000px);
-  height: 4000px !important;
-  width: 4000px !important;
-  transition: transform 0.3s cubic-bezier(0, 0, 0.2, 1),
-              width 0.3s cubic-bezier(0, 0, 0.2, 1),
-              height 0.3s cubic-bezier(0, 0, 0.2, 1),
-              opacity 0.6s cubic-bezier(0, 0, 0.2, 1);
-}
-
-@keyframes mui-ripple-animation {
-  from {
-    opacity: 0.4;
-
-    //transform: scale(1);
-  }
-  to {
+    visibility: visible;
     opacity: 0;
+    transform: scale(7);
+    transition: transform 0.3s cubic-bezier(0, 0, 0.2, 1),
+                opacity 0.6s cubic-bezier(0, 0, 0.2, 1);
 
-    //transform: scale(100);
+  }
 
-    width: 4000px;
-    height: 4000px;
-    transform: translate(-2000px, -2000px);
+  &.mui--is-visible {
+    opacity: 0.3;
   }
 }
-
 
 
 

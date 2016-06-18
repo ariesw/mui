@@ -10,8 +10,7 @@ var jqLite = require('./lib/jqLite'),
     util = require('./lib/util'),
     btnClass = 'mui-btn',
     btnFABClass = 'mui-btn--fab',
-    rippleClass = 'mui-ripple-effect',
-    animationName = 'mui-btn-inserted';
+    rippleClass = 'mui-ripple-effect';
 
 
 /**
@@ -50,11 +49,25 @@ function eventHandler(ev) {
     return;
   } else {
     buttonEl.touchFlag = true;
-    setTimeout(function() {
-      buttonEl.touchFlag = false;
-    }, 100);
+    setTimeout(function() {buttonEl.touchFlag = false;}, 100);
   }
 
+
+  // -------------------------------------
+
+  // add a mouseactive flag handler
+  if (buttonEl.mouseactive === undefined) {
+    var fn = function() {buttonEl.mouseactive = false;};
+    jqLite.on(buttonEl, 'mouseup', fn);
+    jqLite.on(buttonEl, 'mouseexit', fn);
+  }
+
+  // set mouseactive flag
+  buttonEl.mouseactive = true;
+
+  // --------------------------------------
+
+  
   var rippleEl = document.createElement('div');
   rippleEl.className = rippleClass;
 
@@ -80,34 +93,13 @@ function eventHandler(ev) {
   buttonEl.appendChild(rippleEl);
 
   requestAnimationFrame(function() {
-    jqLite.css(rippleEl, {
-      width: '4000px',
-      height: '4000px',
-      opacity: 0,
-      transform: 'translate(-2000px, -2000px)'      
-    });
-
-    jqLite.addClass(rippleEl, 'mui--is-animating');
+    jqLite.addClass(rippleEl, 'mui--is-animating mui--is-visible');
 
     window.setTimeout(function() {
       var parentNode = rippleEl.parentNode;
       if (parentNode) parentNode.removeChild(rippleEl);
     }, 600);
   });
-
-  /*
-  requestAnimationFrame(function() {
-    jqLite.css(rippleEl, {
-      transitionProperty: 'transform, opacity, width, height',
-      transitionDuration: '.6s'
-    });
-  });*/
-
-  /*
-  window.setTimeout(function() {
-    var parentNode = rippleEl.parentNode;
-    if (parentNode) parentNode.removeChild(rippleEl);
-  }, 600);*/
 }
 
 
