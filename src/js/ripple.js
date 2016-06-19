@@ -66,7 +66,7 @@ function eventHandler(ev) {
   buttonEl.mouseactive = true;
 
   // --------------------------------------
-
+  
   
   var rippleEl = document.createElement('div');
   rippleEl.className = rippleClass;
@@ -92,14 +92,45 @@ function eventHandler(ev) {
 
   buttonEl.appendChild(rippleEl);
 
+  // remove 
+
   requestAnimationFrame(function() {
     jqLite.addClass(rippleEl, 'mui--is-animating mui--is-visible');
-
-    window.setTimeout(function() {
-      var parentNode = rippleEl.parentNode;
-      if (parentNode) parentNode.removeChild(rippleEl);
-    }, 600);
   });
+
+  // remove ripple logic
+  var isClicked = true,
+      inTransition = true;
+
+  function removeRippleEl() {
+    var parentNode = rippleEl.parentNode;
+    if (parentNode) parentNode.removeChild(rippleEl);
+  }
+  
+  // add handlers to button
+  function mouseHandler() {
+    isClicked = false;
+
+    // remove handlers
+    jqLite.off(buttonEl, 'mouseup', mouseHandler);
+    jqLite.off(buttonEl, 'mouseleave', mouseHandler);
+
+    jqLite.removeClass(rippleEl, 'mui--is-visible');
+
+    // remove ripple
+    if (!inTransition) removeRippleEl();
+  }
+
+  // add handler to button
+  jqLite.on(buttonEl, 'mouseup', mouseHandler);
+  jqLite.on(buttonEl, 'mouseleave', mouseHandler);
+
+  window.setTimeout(function() {
+    inTransition = false;
+
+    // remove ripple
+    if (!isClicked) removeRippleEl();
+  }, 600);
 }
 
 
