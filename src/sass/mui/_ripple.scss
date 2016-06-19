@@ -10,21 +10,24 @@
   border-radius: 50%;
   pointer-events: none;
 
-  visibility: hidden;
+  // initial properties
   opacity: 0.4;
   transform: scale(1);
 
-  &.mui--is-animating {
-    visibility: visible;
+  &.mui--animate-in {
     opacity: 0;
     transform: scale(7);
     transition: transform 0.3s cubic-bezier(0, 0, 0.2, 1),
                 opacity 0.6s cubic-bezier(0, 0, 0.2, 1);
-
   }
 
-  &.mui--is-visible {
+  &.mui--active {
     opacity: 0.3;
+  }
+
+  &.mui--animate-out {
+    opacity: 0;
+    transition: opacity 0.6s cubic-bezier(0, 0, 0.2, 1);
   }
 }
 

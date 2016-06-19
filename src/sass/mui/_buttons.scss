@@ -87,7 +87,7 @@
 
   }
   
-  &:active {
+  &:active:hover {
     @include x-btn-box-shadow-active();
   }
   

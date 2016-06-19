@@ -52,22 +52,6 @@ function eventHandler(ev) {
     setTimeout(function() {buttonEl.touchFlag = false;}, 100);
   }
 
-
-  // -------------------------------------
-
-  // add a mouseactive flag handler
-  if (buttonEl.mouseactive === undefined) {
-    var fn = function() {buttonEl.mouseactive = false;};
-    jqLite.on(buttonEl, 'mouseup', fn);
-    jqLite.on(buttonEl, 'mouseexit', fn);
-  }
-
-  // set mouseactive flag
-  buttonEl.mouseactive = true;
-
-  // --------------------------------------
-  
-  
   var rippleEl = document.createElement('div');
   rippleEl.className = rippleClass;
 
@@ -95,7 +79,7 @@ function eventHandler(ev) {
   // remove 
 
   requestAnimationFrame(function() {
-    jqLite.addClass(rippleEl, 'mui--is-animating mui--is-visible');
+    jqLite.addClass(rippleEl, 'mui--animate-in mui--active');
   });
 
   // remove ripple logic
@@ -115,17 +99,20 @@ function eventHandler(ev) {
     jqLite.off(buttonEl, 'mouseup', mouseHandler);
     jqLite.off(buttonEl, 'mouseleave', mouseHandler);
 
-    jqLite.removeClass(rippleEl, 'mui--is-visible');
+    jqLite.removeClass(rippleEl, 'mui--active');
 
     // remove ripple
-    if (!inTransition) removeRippleEl();
+    if (!inTransition) {
+      jqLite.addClass(rippleEl, 'mui--animate-out');
+      setTimeout(removeRippleEl, 600);
+    }
   }
 
   // add handler to button
   jqLite.on(buttonEl, 'mouseup', mouseHandler);
   jqLite.on(buttonEl, 'mouseleave', mouseHandler);
 
-  window.setTimeout(function() {
+  setTimeout(function() {
     inTransition = false;
 
     // remove ripple
