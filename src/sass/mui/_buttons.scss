@@ -120,7 +120,8 @@
 
   &:hover,
   &:focus,
-  &:active {
+  &:active,
+  &:active:hover {
     box-shadow: none;
     background-color: $mui-btn-flat-bg-color-hover;
   }
