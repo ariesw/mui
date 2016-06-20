@@ -10,7 +10,8 @@ var jqLite = require('./lib/jqLite'),
     util = require('./lib/util'),
     btnClass = 'mui-btn',
     btnFABClass = 'mui-btn--fab',
-    rippleClass = 'mui-ripple-effect';
+    rippleClass = 'mui-ripple-effect',
+    animationDuration = 600;
 
 
 /**
@@ -52,6 +53,22 @@ function eventHandler(ev) {
     setTimeout(function() {buttonEl.touchFlag = false;}, 100);
   }
 
+  // create
+  var rippleEl = createEl(ev, buttonEl);
+
+  // add
+  buttonEl.appendChild(rippleEl);
+
+  // animate
+  animateEl(rippleEl, buttonEl);
+}
+
+
+/**
+ * Create ripple element  
+ * @param {Element} - buttonEl - The button element.
+ */
+function createEl(ev, buttonEl) {
   var rippleEl = document.createElement('div');
   rippleEl.className = rippleClass;
 
@@ -74,50 +91,76 @@ function eventHandler(ev) {
     left: xPos - radius + 'px'
   });
 
-  buttonEl.appendChild(rippleEl);
+  return rippleEl;
+}
 
-  // remove 
 
-  requestAnimationFrame(function() {
-    jqLite.addClass(rippleEl, 'mui--animate-in mui--active');
-  });
-
-  // remove ripple logic
-  var isClicked = true,
+/**
+ * Animate ripple element
+ * @param {Element} rippleEl - The ripple element.
+ */
+function animateEl(rippleEl, buttonEl) {
+  var inClick = true,
       inTransition = true;
 
+
+  /**
+   * Helper function to remove handlers
+   */
+  function removeHandlers() {
+    jqLite.off(buttonEl, 'mouseup', mouseHandler);
+    jqLite.off(buttonEl, 'mouseleave', mouseHandler);
+  }
+
+
+  /**
+   * Helper function to remove ripple
+   */
   function removeRippleEl() {
     var parentNode = rippleEl.parentNode;
     if (parentNode) parentNode.removeChild(rippleEl);
-  }
-  
-  // add handlers to button
-  function mouseHandler() {
-    isClicked = false;
 
     // remove handlers
-    jqLite.off(buttonEl, 'mouseup', mouseHandler);
-    jqLite.off(buttonEl, 'mouseleave', mouseHandler);
+    removeHandlers();
+  }
 
+
+  /**
+    * Define mouse handler 
+    */
+  function mouseHandler() {
+    inClick = false;
+
+    // remove handlers
+    removeHandlers();
+
+    // remove active class
     jqLite.removeClass(rippleEl, 'mui--active');
 
-    // remove ripple
     if (!inTransition) {
+      // animate out
       jqLite.addClass(rippleEl, 'mui--animate-out');
-      setTimeout(removeRippleEl, 600);
+      setTimeout(removeRippleEl, animationDuration);
     }
   }
+
 
   // add handler to button
   jqLite.on(buttonEl, 'mouseup', mouseHandler);
   jqLite.on(buttonEl, 'mouseleave', mouseHandler);
 
+  // start animation
+  requestAnimationFrame(function() {
+    jqLite.addClass(rippleEl, 'mui--animate-in mui--active');
+  });
+
+  // animate in
   setTimeout(function() {
     inTransition = false;
 
     // remove ripple
-    if (!isClicked) removeRippleEl();
-  }, 600);
+    if (!inClick) removeRippleEl();
+  }, animationDuration);
 }
 
 
