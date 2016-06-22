@@ -14,7 +14,6 @@ let rippleIter = 0;
 
 const PropTypes = React.PropTypes,
       btnClass = 'mui-btn',
-      rippleClass = 'mui-ripple-effect',
       btnAttrs = {color: 1, variant: 1, size: 1};
 
 
@@ -139,6 +138,11 @@ class Button extends React.Component {
  * @class
  */
 class Ripple extends React.Component {
+  state = {
+    isActive: true,
+    inTransition: null
+  };
+
   static propTypes = {
     xPos: PropTypes.number,
     yPos: PropTypes.number,
@@ -154,6 +158,14 @@ class Ripple extends React.Component {
   };
 
   componentDidMount() {
+    var t0;
+
+    // start animation
+    requestAnimationFrame(() => {
+      t0 = new Date;
+      this.setState({inTransition: true});
+    });
+
     // trigger teardown in 2 sec
     this.teardownTimer = setTimeout(() => {
       let fn = this.props.onTeardown;
@@ -177,7 +189,15 @@ class Ripple extends React.Component {
       left: this.props.xPos - radius || 0
     };
 
-    return <div className={rippleClass} style={style} />;
+    // define class
+    let cls = 'mui-ripple-effect';
+
+    if (this.state.isActive) cls += ' mui--active';
+
+    if (this.state.inTransition === true) cls += ' mui--animate-in';
+    else if (this.state.inTransition === false) cls += ' mui--animate-out';
+
+    return <div className={cls} style={style} />;
   }
 }
 
