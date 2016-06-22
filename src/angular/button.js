@@ -8,7 +8,8 @@ import angular from 'angular';
 import * as jqLite from '../js/lib/jqLite';
 
 
-const moduleName = 'mui.button';
+const moduleName = 'mui.button',
+      animationDuration = 600;
 
 
 angular.module(moduleName, [])
@@ -46,13 +47,16 @@ angular.module(moduleName, [])
     return {
       restrict: 'A',
       link: function(scope, element, attrs) {
-        var rippleClass = 'mui-ripple-effect';
+        var rippleClass = 'mui-ripple-effect',
+            touchEvent;
+
+        touchEvent = ('ontouchstart' in element) ? 'touchstart' : 'mousedown';
 
         /**
          * onmousedown ripple effect
          * @param  {event} mousedown event
          */
-        element.on('mousedown', function(event) {
+        element.on(touchEvent, function(event) {
           if (element.prop('disabled')) return;
 
           var offset = jqLite.offset(element[0]),
@@ -73,20 +77,47 @@ angular.module(moduleName, [])
             left: (xPos - radius) + 'px'
           };
 
-          var ripple = angular.element('<div></div>').addClass(rippleClass);
+          var rippleEl = angular.element('<div></div>').addClass(rippleClass);
           for (var style in rippleStyle) {
-            ripple.css(style, rippleStyle[style]);
+            rippleEl.css(style, rippleStyle[style]);
           }
 
-          element.append(ripple);
+          element.append(rippleEl);
 
-          // remove after delay
-          $timeout(function() {
-            ripple.remove();
-          }, 2000);
+          // animate ripple
+          var events = 'mouseup mouseleave touchend',
+              t0;  // start timer
+
+          /**
+           * Mouse event handler
+           */
+          function mouseHandler() {
+            // remove handlers
+            element.off(events, mouseHandler);
+
+            // inactivate
+            rippleEl.removeClass('mui--active');
+
+            // animate out
+            if (new Date - t0 > animationDuration) {
+              rippleEl.addClass('mui--animate-out');
+            }
+
+            // remove ripple element
+            setTimeout(rippleEl.remove, animationDuration);
+          }
+
+          // add handler to button
+          element.on(events, mouseHandler);
+
+          // start animation
+          requestAnimationFrame(function() {
+            t0 = new Date;
+            rippleEl.addClass('mui--animate-in mui--active');
+          });
         });
       }
-    };
+    }
   }]);
 
 
